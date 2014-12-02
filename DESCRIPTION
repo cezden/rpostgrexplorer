@@ -1,0 +1,16 @@
+Package: rpostgrexplorer
+Type: Package
+Title: Simplification of analysis in PostgreSQL and Redshift DBs
+Version: 0.1
+Date: 2014-12-02
+Author: Cezary Dendek
+Maintainer: Who to complain to <yourfault@somewhere.net>
+Description: More about what it does (maybe more than one line)
+License: GPLv2
+Imports:
+    tm,
+    lda,
+    topicmodels,
+    RPostgreSQL
+Suggests:
+    testthat
