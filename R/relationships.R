@@ -9,7 +9,7 @@
 #' 
 #' The purpose of \emph{Level 1} query is to perform simple counting of distinct values in both columns resulting in the following table:
 #' \itemize{
-#'    \item{\emph{eone} the value from combined list of values from column1 and column2}
+#'    \item{\emph{eone} the value from combined list of non-NULL values from column1 and column2}
 #'    \item{\emph{aone.cnt} number of occurences of the \code{eone} in column1 or \code{NULL} in case of no occurences}
 #'    \item{\emph{atwo.cnt} number of occurences of the \code{eone} in column2 or \code{NULL} in case of no occurences}
 #' }
@@ -26,7 +26,7 @@
 #' 
 #' The purpose of \emph{Level 3} query is to aggregate results of \emph{Level 2} query into single row of the following structure:
 #' \itemize{
-#'    \item{\code{distvals_cnt}: number of distinct values in column1 and column2 (combined)}
+#'    \item{\code{distvals_cnt}: number of distinct non-NULL values in column1 and column2 (combined)}
 #'    \item{\code{f_distentities_frac}: fraction of (combined) distinct values in column1 (first)}
 #'    \item{\code{s_distentities_frac}: fraction of (combined) distinct values in column2 (second)}
 #'    \item{\code{distentities_match_frac}: fraction of matching values (1+ -- 1+ relationships)}
@@ -34,8 +34,8 @@
 #'        \code{min}, \code{mean}, \code{max} and \code{sd} of distinct value counts in column1 (first) }
 #'    \item{\code{s_mincnt}, \code{s_avgcnt}, \code{s_maxcnt}, \code{f_sdevcnt}: 
 #'        \code{min}, \code{mean}, \code{max} and \code{sd} of distinct value counts in column2 (second) }
-#'    \item{\code{f_sumcnt}: number of rows(?) in column1}
-#'    \item{\code{s_sumcnt}: number of rows(?) in column2}
+#'    \item{\code{f_sumcnt}: number of non-NULL rows in column1}
+#'    \item{\code{s_sumcnt}: number of non-NULL rows in column2}
 #'    \item{\code{f_avgcnt_when_present}, \code{f_sdevcnt_when_present}: 
 #'        \code{mean} and \code{sd} of distinct value counts in column1 (first) when they are present}
 #'    \item{\code{s_avgcnt_when_present}, \code{s_sdevcnt_when_present}: 
@@ -47,7 +47,7 @@
 #' }
 #' @export
 get.intersecting.att.query <- function(groupping.col, tablename1, tablename2, schemaname = NA){
-  ### TODO: verify behavior in the presence of NULL values, Level 1 query may be interesting because NULL!=NULL
+  ### TODO: pay attention to the restriction of NULL values (!!!)
   schemaselector <- ""
   if (!is.na(schemaname)){
     schemaselector <- paste0(schemaname,".")
@@ -96,11 +96,11 @@ get.intersecting.att.query <- function(groupping.col, tablename1, tablename2, sc
              atwo.cnt as atwo_cnt_nullable,
              (case when aone.cnt is null then null else atwo.cnt end) as atwo_cnt_both_present
          from
-           (select ", groupping.col, " as eone,count(*) as cnt from ", schemaselector, tablename1, " group by ", groupping.col, ") aone
+           (select ", groupping.col, " as eone,count(*) as cnt from ", schemaselector, tablename1, " where ", groupping.col, " is not null group by ", groupping.col, ") aone
            
            full outer join
            
-           (select ", groupping.col, " as eone,count(*) as cnt from ", schemaselector, tablename2, " group by ", groupping.col, ") atwo
+           (select ", groupping.col, " as eone,count(*) as cnt from ", schemaselector, tablename2, " where ", groupping.col, " is not null group by ", groupping.col, ") atwo
            
            on aone.eone=atwo.eone
            )        
