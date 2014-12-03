@@ -10,6 +10,7 @@
 #'    \item{has table a primary key?}
 #' } 
 #' @param schemaname name of specific schema, if not provided tables from all schemas will be returned
+#' @return SQL query retrieving the metadata information concerning the tables
 get.tables.query <- function(schemaname = NULL){
   schema.selector <- ""
   if (!is.null(schemaname)){

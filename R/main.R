@@ -1,3 +1,14 @@
+#' DB connection specification
+#' @example
+#' control.connection <- db.connection(user="dbuser", host="dbhost", port=0000, dbname="dbname", password="dbpass")  
+#' @export
+db.connection <- function(...){
+  z <- list(...)
+  class(z) <- "db.connection" 
+  z
+}
+
+
 #' Metadata query
 #' 
 #' Loads the attributes list and table list

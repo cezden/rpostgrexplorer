@@ -201,6 +201,8 @@ get.all.columns.matching=function(substring){
   attributesList.subsel
 }
 
+demo2<- function(){
+
 get.all.columns.matching("chocolate")
 
 findAssocs(att.idx$dtm,"chocoholic.int8",0.0)
