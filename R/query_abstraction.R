@@ -13,7 +13,7 @@ query.load.execute <- function(queries, control.connection, verbose = TRUE) {
   if(is.null(control.connection)) {
     stop("No connection parameters provided")
   }
-  library(RPostgreSQL)
+  library(RPostgreSQL)  ## TODO: should it be here?
   drv <- DBI::dbDriver("PostgreSQL")
   con <- do.call("dbConnect", c(drv, control.connection))
   queries.nonempty <- 
