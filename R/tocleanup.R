@@ -63,49 +63,6 @@ get.groupping.att.query=function(groupping.col, tablename, schemaname=NA){
         ",sep="")
 }
 
-get.intersecting.att.query=function(groupping.col, tablename1, tablename2, schemaname=NA){
-  schemaselector=""
-  if (!is.na(schemaname)){
-    schemaselector=paste(schemaname,".",sep="")
-  }
-  paste("
-        select count(*) as distvals_cnt,
-        avg(aone_cnt_ind::float8) as f_distentities_frac,
-        avg(atwo_cnt_ind::float8) as s_distentities_frac,
-        avg(aone_cnt_ind::float8*atwo_cnt_ind::float8) as distentities_match_frac,
-        min(aone_cnt) as f_mincnt, avg(aone_cnt::float8) as f_avgcnt, max(aone_cnt) as f_maxcnt, stddev_samp(aone_cnt::float8) as f_sdevcnt,
-        sum(aone_cnt) as f_sumcnt,
-        avg(aone_cnt_nullable::float8) as f_avgcnt_when_present,
-        stddev_samp(aone_cnt_nullable::float8) as f_sdevcnt_when_present,
-        min(aone_cnt_both_present) as f_mincnt_both_present, avg(aone_cnt_both_present::float8) as f_avgcnt_both_present, max(aone_cnt_both_present) as f_maxcnt_both_present, stddev_samp(aone_cnt_both_present::float8) as f_sdevcnt_both_present,
-        min(atwo_cnt) as s_mincnt, avg(atwo_cnt::float8) as s_avgcnt, max(atwo_cnt) as s_maxcnt, stddev_samp(atwo_cnt::float8) as s_sdevcnt,
-        sum(atwo_cnt) as s_sumcnt,
-        avg(atwo_cnt_nullable::float8) as s_avgcnt_when_present,
-        stddev_samp(atwo_cnt_nullable::float8) as s_sdevcnt_when_present,
-        min(atwo_cnt_both_present) as s_mincnt_both_present, avg(atwo_cnt_both_present::float8) as s_avgcnt_both_present, max(atwo_cnt_both_present) as s_maxcnt_both_present, stddev_samp(atwo_cnt_both_present::float8) as s_sdevcnt_both_present
-        from
-        
-        (
-        select 
-        coalesce(aone.cnt,0) as aone_cnt, 
-        (case when aone.cnt is null then 0.0 else 1.0 end) as aone_cnt_ind,
-        aone.cnt as aone_cnt_nullable,
-        (case when atwo.cnt is null then null else aone.cnt end) as aone_cnt_both_present,
-        coalesce(atwo.cnt,0) as atwo_cnt, 
-        (case when atwo.cnt is null then 0.0 else 1.0 end) as atwo_cnt_ind,
-        atwo.cnt as atwo_cnt_nullable,
-        (case when aone.cnt is null then null else atwo.cnt end) as atwo_cnt_both_present
-        from
-        (select ",groupping.col," as eone,count(*) as cnt from ",schemaselector,tablename1," group by ",groupping.col,") aone
-        full outer join
-        (select ",groupping.col," as eone,count(*) as cnt from ",schemaselector,tablename2," group by ",groupping.col,") atwo
-        on aone.eone=atwo.eone
-        )        
-        ",sep="")
-}
-
-
-
 infer.relation=function(colName,baseTable,relTables,schemaname=NA){
   relTables.enf=setdiff(unlist(relTables),baseTable)
   

@@ -6,14 +6,15 @@
 #'  \item{data.retirevedOn (the time the query returned values)}
 #' }
 #' @param queries list of queries to execute
-#' @param control.connection the control.connection object
+#' @param control.connection the object of \code{db.connection} class
 #' @param verbose should additional information be printed out
 #' @export
 query.load.execute <- function(queries, control.connection, verbose = TRUE) {
   if(is.null(control.connection)) {
     stop("No connection parameters provided")
   }
-  drv <- dbDriver("PostgreSQL")
+  library(RPostgreSQL)
+  drv <- DBI::dbDriver("PostgreSQL")
   con <- do.call("dbConnect", c(drv, control.connection))
   queries.nonempty <- 
     Filter(function(x){
