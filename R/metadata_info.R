@@ -11,7 +11,7 @@
 #' } 
 #' @param schemaname name of specific schema, if not provided tables from all schemas will be returned
 #' @return SQL query retrieving the metadata information concerning the tables
-get.tables.query <- function(schemaname = NULL){
+sql.tables <- function(schemaname = NULL){
   schema.selector <- ""
   if (!is.null(schemaname)){
     schema.selector <- paste0("and t.schemaname='", schemaname, "'")
@@ -51,7 +51,7 @@ get.tables.query <- function(schemaname = NULL){
 #'    \item{histogram bounds}
 #' }
 #' @param schemaname name of specific schema, if not provided tables from all schemas will be returned
-get.attributes.query <- function(schemaname = NULL){
+sql.attributes <- function(schemaname = NULL){
   schema.selector <- ""
   if (!is.null(schemaname)){
     schema.selector <- paste0("where a.schemaname='", schemaname, "'")

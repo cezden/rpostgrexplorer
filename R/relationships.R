@@ -46,7 +46,7 @@
 #'        \code{min}, \code{mean}, \code{max} and \code{sd} of of distinct value counts in column2 (second) when there are matching rows in column1}
 #' }
 #' @export
-get.intersecting.att.query <- function(groupping.col, tablename1, tablename2, schemaname = NA){
+sql.entity.relation <- function(groupping.col, tablename1, tablename2, schemaname = NA){
   ### TODO: pay attention to the restriction of NULL values (!!!)
   schemaselector <- ""
   if (!is.na(schemaname)){
@@ -106,4 +106,37 @@ get.intersecting.att.query <- function(groupping.col, tablename1, tablename2, sc
            )        
          ")
 }
+
+#' SQL groupped counts
+create.groupping.query <- function(groupping.col, subquery, na.rm = TRUE){
+  variable.name <- "eone"
+  count.name <- "cnt"
+  na.rm.query <- ""
+  if (na.rm){
+    na.rm.query <- paste0("where ", groupping.col, " is not null")
+  }
+  paste0("
+         select ", groupping.col, " as ", variable.name, "  
+                count(*) as ", count.name, " 
+         from 
+         (", subquery, ")
+         ", na.rm.query, "
+           group by ", groupping.col)
+}
+
+
+
+create.groupping.query <- function(groupping.col, tablename, schemaname = NA){
+  variable.name <- "eone"
+  count.name <- "cnt"
+  paste0("
+         select ", groupping.col, " as ", variable.name, "  
+                count(*) as ", count.name, " 
+         from ", schemaselector, tablename, 
+         " where ", groupping.col, " is not null group by ", groupping.col)
+}
+
+
+
+
 

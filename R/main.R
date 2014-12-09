@@ -23,8 +23,8 @@ db.connection <- function(...){
 load.metadata <- function(control.connection, schemaname = NULL){
   ## TODO: cleanup of documentation
   
-  queries <- list(tablesList = get.tables.query(schemaname),
-               attributesList = get.attributes.query(schemaname),
+  queries <- list(tablesList = sql.tables(schemaname),
+               attributesList = sql.attributes(schemaname),
                "" # final, closing query (not obligatory, just to simplify notation)
   )
   return (query.load.execute(queries, control.connection))

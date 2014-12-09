@@ -70,7 +70,7 @@ infer.relation=function(colName,baseTable,relTables,schemaname=NA){
   #queryList[baseTable]=get.groupping.att.query(colName,baseTable,schemaname)
   for(tabname in relTables.enf){
     #queryList[tabname]=get.groupping.att.query(colName,tabname,schemaname)
-    queryList[tabname]=get.intersecting.att.query(colName,baseTable,tabname,schemaname)
+    queryList[tabname]=sql.entity.relation(colName,baseTable,tabname,schemaname)
   }
   mmm=query.load.execute(queryList,control.connection)
   resultRel=NULL
