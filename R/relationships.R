@@ -46,65 +46,23 @@
 #'        \code{min}, \code{mean}, \code{max} and \code{sd} of of distinct value counts in column2 (second) when there are matching rows in column1}
 #' }
 #' @export
-sql.entity.relation <- function(groupping.col, tablename1, tablename2, schemaname = NA){
+sql.entity.relation.generic <- function(query1, query1.colname, query1.countname = "cnt", query2, query2.colname, query2.countname = "cnt"){
   ### TODO: pay attention to the restriction of NULL values (!!!)
-  schemaselector <- ""
-  if (!is.na(schemaname)){
-    schemaselector <- paste0(schemaname,".")
-  }
-  paste0("
-         select 
-           count(*) as distvals_cnt,
-
-           avg(aone_cnt_ind::float8) as f_distentities_frac,
-           avg(atwo_cnt_ind::float8) as s_distentities_frac,
-           avg(aone_cnt_ind::float8*atwo_cnt_ind::float8) as distentities_match_frac,
-
-           min(aone_cnt) as f_mincnt, 
-           avg(aone_cnt::float8) as f_avgcnt, 
-           max(aone_cnt) as f_maxcnt, 
-           stddev_samp(aone_cnt::float8) as f_sdevcnt,
-           sum(aone_cnt) as f_sumcnt,
-           avg(aone_cnt_nullable::float8) as f_avgcnt_when_present,
-           stddev_samp(aone_cnt_nullable::float8) as f_sdevcnt_when_present,
-           min(aone_cnt_both_present) as f_mincnt_both_present, 
-           avg(aone_cnt_both_present::float8) as f_avgcnt_both_present, 
-           max(aone_cnt_both_present) as f_maxcnt_both_present, 
-           stddev_samp(aone_cnt_both_present::float8) as f_sdevcnt_both_present,
-
-           min(atwo_cnt) as s_mincnt, 
-           avg(atwo_cnt::float8) as s_avgcnt, 
-           max(atwo_cnt) as s_maxcnt, 
-           stddev_samp(atwo_cnt::float8) as s_sdevcnt,
-           sum(atwo_cnt) as s_sumcnt,
-           avg(atwo_cnt_nullable::float8) as s_avgcnt_when_present,
-           stddev_samp(atwo_cnt_nullable::float8) as s_sdevcnt_when_present,
-           min(atwo_cnt_both_present) as s_mincnt_both_present, 
-           avg(atwo_cnt_both_present::float8) as s_avgcnt_both_present, 
-           max(atwo_cnt_both_present) as s_maxcnt_both_present, 
-           stddev_samp(atwo_cnt_both_present::float8) as s_sdevcnt_both_present
-         from
-         
-         (
-          select 
-             coalesce(aone.cnt,0) as aone_cnt, 
-             (case when aone.cnt is null then 0.0 else 1.0 end) as aone_cnt_ind,
-             aone.cnt as aone_cnt_nullable,
-             (case when atwo.cnt is null then null else aone.cnt end) as aone_cnt_both_present,
-             coalesce(atwo.cnt,0) as atwo_cnt, 
-             (case when atwo.cnt is null then 0.0 else 1.0 end) as atwo_cnt_ind,
-             atwo.cnt as atwo_cnt_nullable,
-             (case when aone.cnt is null then null else atwo.cnt end) as atwo_cnt_both_present
-         from
-           (select ", groupping.col, " as eone,count(*) as cnt from ", schemaselector, tablename1, " where ", groupping.col, " is not null group by ", groupping.col, ") aone
-           
-           full outer join
-           
-           (select ", groupping.col, " as eone,count(*) as cnt from ", schemaselector, tablename2, " where ", groupping.col, " is not null group by ", groupping.col, ") atwo
-           
-           on aone.eone=atwo.eone
-           )        
-         ")
+  
+  ## %%Q1_VALCOUNTER%%, %%Q1_VALNAME%%, %%Q1_QUERY%%
+  ## %%Q2_VALCOUNTER%%, %%Q2_VALNAME%%, %%Q2_QUERY%%
+  stringi::stri_replace_all_fixed(
+    get("relationship_miner", pkg_globals), 
+    c(
+      "%%Q1_QUERY%%", "%%Q1_VALNAME%%","%%Q1_VALCOUNTER%%", 
+      "%%Q2_QUERY%%", "%%Q2_VALNAME%%","%%Q2_VALCOUNTER%%"
+    ), 
+    c(
+      query1, query1.colname, query1.countname,
+      query2, query2.colname, query2.countname
+    ),
+    vectorize_all = FALSE)  
+  
 }
 
 #' SQL groupped counts
@@ -141,24 +99,22 @@ tsttst <- function(){
   cat(get("tables_list", pkg_globals))
 }
 
-#' @export
-sql.entity.relation.generic <- function(query1, query1.colname, query1.countname = "cnt", query2, query2.colname, query2.countname = "cnt"){
-  ## %%Q1_VALCOUNTER%%, %%Q1_VALNAME%%, %%Q1_QUERY%%
-  ## %%Q2_VALCOUNTER%%, %%Q2_VALNAME%%, %%Q2_QUERY%%
-  stringi::stri_replace_all_fixed(
-    get("relationship_miner", pkg_globals), 
-    c(
-      "%%Q1_QUERY%%", "%%Q1_VALNAME%%","%%Q1_VALCOUNTER%%", 
-      "%%Q2_QUERY%%", "%%Q2_VALNAME%%","%%Q2_VALCOUNTER%%"
-    ), 
-    c(
-      query1, query1.colname, query1.countname,
-      query2, query2.colname, query2.countname
-      ),
-    vectorize_all = FALSE)  
-  
-}
 
 
 #sql.entity.relation2("q1", "q1c", "q1cnt", "q2", "q2c", "q2cnt")
 
+#' @export
+sql.entity.relation.simple <- function(tab1.name, tab2.name, tab1.groupping.col, tab2.groupping.col = tab1.groupping.col, schemaname1 = NA, schemaname2 = schemaname1){
+  ### TODO: pay attention to the restriction of NULL values (!!!)
+  schemaselector <- ""
+  if (!is.na(schemaname1)){
+    schemaselector <- paste0(schemaname1,".")
+  }
+}
+
+#sql.entity.relation.simple(tab1.name = "T1", tab2.name = "T2", tab1.groupping.col = "col1", tab2.groupping.col = "col2")
+#sql.entity.relation.simple(tab1.name = "T1", tab2.name = "T2", tab1.groupping.col = "col1", tab2.groupping.col = "col2", schemaname1 = "S1")
+#sql.entity.relation.simple(tab1.name = "T1", tab2.name = "T2", tab1.groupping.col = "col1", tab2.groupping.col = "col2", schemaname1 = "S1", schemaname2 = "S2")
+#sql.entity.relation.simple(tab1.name = "T1", tab2.name = "T2", tab1.groupping.col = "col1", schemaname1 = "S1", schemaname2 = "S2")
+#sql.entity.relation.simple(tab1.name = "T1", tab2.name = "T2", tab1.groupping.col = "col1", schemaname1 = "S1")
+#sql.entity.relation.simple(tab1.name = "T1", tab2.name = "T2", tab1.groupping.col = "col1")
