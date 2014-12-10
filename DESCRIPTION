@@ -12,6 +12,7 @@ Imports:
     lda,
     topicmodels,
     RPostgreSQL,
-    DBI
+    DBI,
+    stringi
 Suggests:
     testthat
