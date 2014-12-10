@@ -136,7 +136,29 @@ create.groupping.query <- function(groupping.col, tablename, schemaname = NA){
          " where ", groupping.col, " is not null group by ", groupping.col)
 }
 
+#' @export
+tsttst <- function(){
+  cat(get("tables_list", pkg_globals))
+}
+
+#' @export
+sql.entity.relation.generic <- function(query1, query1.colname, query1.countname = "cnt", query2, query2.colname, query2.countname = "cnt"){
+  ## %%Q1_VALCOUNTER%%, %%Q1_VALNAME%%, %%Q1_QUERY%%
+  ## %%Q2_VALCOUNTER%%, %%Q2_VALNAME%%, %%Q2_QUERY%%
+  stringi::stri_replace_all_fixed(
+    get("relationship_miner", pkg_globals), 
+    c(
+      "%%Q1_QUERY%%", "%%Q1_VALNAME%%","%%Q1_VALCOUNTER%%", 
+      "%%Q2_QUERY%%", "%%Q2_VALNAME%%","%%Q2_VALCOUNTER%%"
+    ), 
+    c(
+      query1, query1.colname, query1.countname,
+      query2, query2.colname, query2.countname
+      ),
+    vectorize_all = FALSE)  
+  
+}
 
 
-
+#sql.entity.relation2("q1", "q1c", "q1cnt", "q2", "q2c", "q2cnt")
 
