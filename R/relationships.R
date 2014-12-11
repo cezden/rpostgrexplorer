@@ -103,18 +103,30 @@ tsttst <- function(){
 
 #sql.entity.relation2("q1", "q1c", "q1cnt", "q2", "q2c", "q2cnt")
 
-#' @export
-sql.entity.relation.simple <- function(tab1.name, tab2.name, tab1.groupping.col, tab2.groupping.col = tab1.groupping.col, schemaname1 = NA, schemaname2 = schemaname1){
-  ### TODO: pay attention to the restriction of NULL values (!!!)
-  schemaselector <- ""
-  if (!is.na(schemaname1)){
-    schemaselector <- paste0(schemaname1,".")
-  }
+
+sql.table.schemed <- function(tab.name, schema.name){
+
+  schemaselector <- unlist(lapply(schema.name, function(x){
+    if (is.na(x) || stringi::stri_length(stringi::stri_trim_both(x))==0){
+      ""
+    } else {
+      paste0(x, ".")
+    }
+  }))
+  
+  paste0(schemaselector, tab.name)
 }
 
-#sql.entity.relation.simple(tab1.name = "T1", tab2.name = "T2", tab1.groupping.col = "col1", tab2.groupping.col = "col2")
-#sql.entity.relation.simple(tab1.name = "T1", tab2.name = "T2", tab1.groupping.col = "col1", tab2.groupping.col = "col2", schemaname1 = "S1")
-#sql.entity.relation.simple(tab1.name = "T1", tab2.name = "T2", tab1.groupping.col = "col1", tab2.groupping.col = "col2", schemaname1 = "S1", schemaname2 = "S2")
-#sql.entity.relation.simple(tab1.name = "T1", tab2.name = "T2", tab1.groupping.col = "col1", schemaname1 = "S1", schemaname2 = "S2")
-#sql.entity.relation.simple(tab1.name = "T1", tab2.name = "T2", tab1.groupping.col = "col1", schemaname1 = "S1")
-#sql.entity.relation.simple(tab1.name = "T1", tab2.name = "T2", tab1.groupping.col = "col1")
+#' @export
+sql.entity.relation.simple <- function(tab1.name, tab2.name, tab1.groupping.col, tab2.groupping.col = tab1.groupping.col, schemaname1 = NA, schemaname2 = schemaname1){
+  q1 <- sql.table.schemed(tab1.name, schemaname1)
+  q2 <- sql.table.schemed(tab2.name, schemaname2)
+  sql.entity.relation.generic(
+    query1 = q1, 
+    query1.colname = tab1.groupping.col, 
+    query1.countname = "cnt", 
+    query2 = q2, 
+    query2.colname = tab2.groupping.col, 
+    query2.countname = "cnt")
+}
+
