@@ -104,19 +104,6 @@ tsttst <- function(){
 #sql.entity.relation2("q1", "q1c", "q1cnt", "q2", "q2c", "q2cnt")
 
 
-sql.table.schemed <- function(tab.name, schema.name){
-
-  schemaselector <- unlist(lapply(schema.name, function(x){
-    if (is.na(x) || stringi::stri_length(stringi::stri_trim_both(x))==0){
-      ""
-    } else {
-      paste0(x, ".")
-    }
-  }))
-  
-  paste0(schemaselector, tab.name)
-}
-
 #' @export
 sql.entity.relation.simple <- function(tab1.name, tab2.name, tab1.groupping.col, tab2.groupping.col = tab1.groupping.col, schemaname1 = NA, schemaname2 = schemaname1){
   q1 <- sql.table.schemed(tab1.name, schemaname1)

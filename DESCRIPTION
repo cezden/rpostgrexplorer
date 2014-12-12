@@ -5,7 +5,8 @@ Version: 0.1
 Date: 2014-12-02
 Author: Cezary Dendek
 Maintainer: Cezary Dendek <cezary.dendek+rpostgrexlorer@gmail.com>
-Description: The package allows mining the metadata, mainly the relationships between entities.
+Description: The package allows mining the metadata, mainly the relationships
+    between entities.
 License: GPLv2
 Imports:
     tm,
