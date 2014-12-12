@@ -1,5 +1,5 @@
 select 
-  a.*, 
+  a.schemaname, a.tablename, a.attname, a.typname as typename, a.attlen,
   b.null_frac, b.n_distinct, b.most_common_vals, b.most_common_freqs, b.histogram_bounds 
 from 
   (select 
