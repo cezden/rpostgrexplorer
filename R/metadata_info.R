@@ -51,17 +51,106 @@ sql.attributes <- function(schemaname = NULL){
 }
 
 
-
+#' Metadata S3 class
+#' 
+#' @param tables result of \code{\link{sql.tables}} query
+#' @param attributes result of \code{\link{sql.attributes}} query
+#' @param schema the schema(s) restricting the queries
+#' @export
 metadata.info <- function(tables, attributes, schema = NULL){
   res <- list(tables = tables, 
               attributes = attributes,
-              schema = NULL)
+              schema = schema)
   res$atts.by.name <- attributes %>% dplyr::group_by(attname) %>% dplyr::summarize(tablecount = n())
   res$atts.by.name.type <- attributes %>% dplyr::group_by(attname, typename) %>% dplyr::summarize(tablecount = n())
   attr(res, "data.createdOn") <- Sys.time()
   class(res) <- append(class(res), "metadata.info")
   res
 }
+
+#' @export
+print.metadata.info <- function(metadata.inf){
+  cat(paste0("metadata.info object created ", attr(metadata.inf, "data.createdOn"), "\n" ))
+  cat(paste0("\t ", nrow(metadata.inf$tables), " table(s)", "\n"))
+  cat(paste0("\t ", nrow(metadata.inf$attributes), " attribute(s)", "\n"))
+  
+}
+
+
+#' S3 generic dispatcher
+#' @export
+db.attributes <- function(x, ...) UseMethod("db.attributes")
+
+#' DB attributes
+#' 
+#' Extracts the DB attributes from \code{\link{metadata.info}} object
+#' 
+#' Depending on the value of \code{\link{full}} parameter the function returns 
+#' \code{data.frame} describing each attribute in \code{\link{metadata.info}} object.
+#' 
+#' Default (\code{\link{full} = FALSE}) columns of returned object:
+#' \itemize{
+#'    \item{schemaname}
+#'    \item{tablename}
+#'    \item{attribute name}
+#'    \item{type of attribute}
+#' }
+#' 
+#' More detailed information (\code{\link{full} = TRUE}) includes default columns, and additionally:
+#' \itemize{
+#'    \item{length of attribute (related to type)}
+#'    \item{estimated fraction of NULL values}
+#'    \item{estimated number of distinct values (caution!)}
+#'    \item{most common values}
+#'    \item{frequency of most common values}
+#'    \item{histogram bounds}
+#' }
+#' 
+#' 
+#' @param metadata.inf object of class \code{\link{metadata.info}} to perform extraction from
+#' @param full should full database information be returned?
+#' @export
+db.attributes.metadata.info <- function(metadata.inf, full = FALSE){
+  metadata.inf$attributes %>% select(schemaname, tablename, attname, typename)
+}
+
+#' S3 generic dispatcher
+#' @export
+db.attributes.counts <- function(x, ...) UseMethod("db.attributes.counts")
+
+#' DB attributes
+#' 
+#' Extracts the DB attributes from \code{\link{metadata.info}} counting the instances
+#' @param metadata.inf object of class \code{\link{metadata.info}} to perform extraction from
+#' @param typeinfo should the DB type be included?
+#' @export
+db.attributes.counts.metadata.info <- function(metadata.inf, typeinfo = FALSE){
+  if (typeinfo){
+    return(
+      metadata.inf$attributes %>% dplyr::group_by(attname, typename) %>% dplyr::summarize(cnt = n()) %>% ungroup() %>% arrange(desc(cnt))
+      )
+  }
+  metadata.inf$attributes %>% group_by(attname) %>% summarize(tablecount = n()) %>% arrange(desc(tablecount))
+}
+
+
+
+#' S3 generic dispatcher
+#' @export
+db.tables <- function(x, ...) UseMethod("db.tables")
+
+#' DB tables
+#' 
+#' Extracts the DB tables from \code{\link{metadata.info}} object
+#' @param metadata.inf object of class \code{\link{metadata.info}} to perform extraction from
+#' @export
+db.tables.metadata.info <- function(metadata.inf){
+  metadata.inf$tables %>% select(schemaname, tablename, count_estimate, has_index, has_primary_key)
+}
+
+
+
+
 
 attribute.index <- function(x) UseMethod("attribute.index")
 
@@ -88,20 +177,29 @@ attribute.index.metadata.info <- function(metadata.info){
   
 }
 
+#' Generic dispatcher
 #' @export
 attribute.instances <- function(x, ...) UseMethod("attribute.instances")
 
 
 #' List of tables containing one of given attributes
 #' 
-#' Extracts from an instance of \code{metadata.info} object
+#' Extracts from an instance of \code{\link{metadata.info}} object
 #' all occurences of attributes from \code{attribute.names}
 #' 
-#' @param metadata.info an object of metadata.info class
+#' @param metadata.info an object of \code{\link{metadata.info}} class
 #' @param attribute.names character vector of attribute names
+#' @param fixed should the attribute names be treated as fixed strings (default) or regular expressions?
+#' @param partial should the attribute names be matched partially (e.g. attribute \code{"attrib123"} will match query \code{"attrib12"}) or fully?
 #' @export
-attribute.instances.metadata.info <- function(metadata.info, attribute.names){
-  metadata.info$attributes %>% filter(attname %in% attribute.names) %>% select(schemaname, tablename, attname, typename)
+attribute.instances.metadata.info <- function(metadata.info, attribute.names, fixed = TRUE, partial = FALSE){
+  if (fixed && !partial){
+    return(
+      metadata.info$attributes %>% filter(attname %in% attribute.names) %>% select(schemaname, tablename, attname, typename)
+      )
+  }
+  ##stringi::stri_detect_fixed(c("stringi R"), c('in', 'R', '0'))
+  ## TODO: write
 }
 
 #' @export
@@ -110,7 +208,7 @@ tables.with.attributes <- function(x, ...) UseMethod("tables.with.attributes")
 
 #' List of tables with containing all attributes from given set
 #' 
-#' Exctracts from an instance of \code{metadata.info} a vector of tables
+#' Extracts from an instance of \code{metadata.info} a vector of tables
 #' containing all attributes from \code{attribute.names}
 #' 
 #' @param metadata.info an object of metadata.info class
@@ -129,20 +227,27 @@ tables.with.attributes.metadata.info <- function(metadata.info, attribute.names)
 
 
 
+#' Attribute description generic dispatcher
 #' @export
 describe.attribute <- function(x, ...) UseMethod("describe.attribute")
 
+#' Attribute description
+#' @param metadata.info an object of \code{\link{metadata.info}} class
+#' @param attribute.name the attribute name to describe
 #' @export
 describe.attribute.metadata.info <- function(metadata.info, attribute.name){
   
   ## count attributes with given name
-  att.instances.count <- metadata.info$attributes %>% dplyr::filter(attname == attribute.name) %>% dplyr::group_by(typename) %>% dplyr::summarize(tablecount = n())
+  att.instances.count <- metadata.info$attributes %>% 
+    dplyr::filter(attname == attribute.name) %>% 
+    dplyr::group_by(attname, typename) %>% 
+    dplyr::summarize(tablecount = n()) %>% ungroup() %>% arrange(desc(tablecount))
   
   ## similar attributes
   most.sim <- string.get.most.similar(attribute.name, metadata.info$atts.by.name$attname)
-  metadata.info$atts.by.name %>% filter(attname %in% most.sim)
+  similar <- metadata.info$atts.by.name %>% filter(attname %in% most.sim)
   
-  
+  list(instances.count = att.instances.count, similar = similar)
 }
 
 #' @export
@@ -153,7 +258,7 @@ ambiguous.attributes <- function(x, ...) UseMethod("ambiguous.attributes")
 #' Returns a list of attributes (in the form of data.frame) that provided metadata.info object 
 #' are ambiguous w.r.t. the SQL type, that is there exists instances of attribute with the same name and different types.
 #' 
-#' @param metadata.info the object of \code{metadata.info} class which to use in analysis 
+#' @param metadata.info the object of \code{\link{metadata.info}} class which to use in analysis 
 #' @export
 ambiguous.attributes.metadata.info <- function(metadata.info){
   att.type.instances <- metadata.info$attributes %>% dplyr::group_by(typename, attname) %>% dplyr::summarize(cnt = 1) 
