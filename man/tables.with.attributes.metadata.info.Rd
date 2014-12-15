@@ -11,7 +11,7 @@
 \item{attribute.names}{character vector of attribute names}
 }
 \description{
-Exctracts from an instance of \code{metadata.info} a vector of tables
+Extracts from an instance of \code{metadata.info} a vector of tables
 containing all attributes from \code{attribute.names}
 }
 

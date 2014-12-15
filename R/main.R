@@ -18,7 +18,8 @@ db.connection <- function(...){
 #' Metadata query
 #' 
 #' Loads the attributes list and table list
-#' @param control.connection the control.connection object
+#' @param control.connection the \code{\link{db.connection}} object
+#' @return instance of \code{\link{metadata.info}} class
 #' @export
 load.metadata <- function(control.connection, schemaname = NULL){
   ## TODO: cleanup of documentation

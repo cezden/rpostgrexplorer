@@ -6,7 +6,10 @@
 load.metadata(control.connection, schemaname = NULL)
 }
 \arguments{
-\item{control.connection}{the control.connection object}
+\item{control.connection}{the \code{\link{db.connection}} object}
+}
+\value{
+instance of \code{\link{metadata.info}} class
 }
 \description{
 Loads the attributes list and table list
