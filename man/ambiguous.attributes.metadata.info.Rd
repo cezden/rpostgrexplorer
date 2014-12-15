@@ -6,7 +6,7 @@
 \method{ambiguous.attributes}{metadata.info}(metadata.info)
 }
 \arguments{
-\item{metadata.info}{the object of \code{metadata.info} class which to use in analysis}
+\item{metadata.info}{the object of \code{\link{metadata.info}} class which to use in analysis}
 }
 \description{
 Returns a list of attributes (in the form of data.frame) that provided metadata.info object
