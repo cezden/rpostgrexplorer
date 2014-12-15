@@ -31,3 +31,12 @@ control.connection <- db.connection(user="username", password="userpassword",
 meta.inf <- rpostgrexplorer::load.metadata(control.connection = control.connection, schemaname = "schema1")
 
 ```
+
+<h5> Listing the attributes and tables </h5>
+
+```{Ruby}
+
+head(db.attributes(meta.inf))
+head(db.tables(meta.inf))
+
+```
