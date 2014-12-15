@@ -40,8 +40,17 @@ meta.inf <- rpostgrexplorer::load.metadata(control.connection = control.connecti
 
 head(db.attributes(meta.inf))
 head(db.tables(meta.inf))
+```
+The data.frame listing attribute names along with the counts of their occurences in the tables:
+```{Ruby}
+#without DB type information
+head(db.attributes.counts(meta.inf)) 
+
+#with DB type information (important if some attributes share name but not the type)
+head(db.attributes.counts(meta.inf), typeinfo = TRUE) 
 
 ```
+
 <h5> Describing an attribute </h5>
 
 Description of the attribute consists of:
