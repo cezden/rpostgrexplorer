@@ -4,21 +4,21 @@ rpostgrexplorer
 R package for PostgreSQL and Redshift metadata explorations
 
 
-<h4> Motivation </h4>
+<h3> Motivation </h3>
 
 Imagine the situation when you are given a poorly (or too-well) documented PostgreSQL-stored data to analyze.
 Datatables lacks the constraints, some are empty or residual, all is a bit messy.
 The **rpostgrexplorer** package is to help to navigate the analysis on the sea of the messy data.
 
-<h4> Installation </h4>
+<h3> Installation </h3>
 
 ```{Ruby}
 devtools::install_github("cezden/rpostgrexplorer")
 ```
 
-<h4> Sample session </h4>
+<h3> Sample session </h3>
 
-<h5> Initialization </h5>
+<h4> Initialization </h4>
 
 
 ```{Ruby}
@@ -32,6 +32,8 @@ meta.inf <- rpostgrexplorer::load.metadata(control.connection = control.connecti
 
 ```
 
+<h4> Querying the metadata object </h4>
+
 <h5> Listing the attributes and tables </h5>
 
 ```{Ruby}
@@ -40,3 +42,34 @@ head(db.attributes(meta.inf))
 head(db.tables(meta.inf))
 
 ```
+<h5> Describing an attribute </h5>
+
+Description of the attribute consists of:
+* number of instances along with db type
+* the most similar names of other attributes
+ 
+```{Ruby}
+
+describe.attribute(meta.inf, "cookieid")
+
+```
+producing:
+
+```
+$instances.count
+Source: local data frame [1 x 2]
+
+  typename tablecount
+1     int8         38
+
+$similar
+Source: local data frame [3 x 2]
+
+                attname tablecount
+1      ccookieid                 1
+2      cookieiid                 1
+3      coookieid                 1
+```
+
+
+
