@@ -51,6 +51,18 @@ sql.attributes <- function(schemaname = NULL){
 }
 
 
+sql.objects <- function(schemaname = NULL){
+  schema.selector <- ""
+  if (!is.null(schemaname)){
+    schema.selector <- paste0("and n.nspname='", schemaname, "'")
+  } 
+  stringi::stri_replace_all_fixed(
+    get("objects_list", pkg_globals), 
+    c("%%SCHEMA_SELECTOR%%"), c(schema.selector),
+    vectorize_all = FALSE)    
+}
+
+
 #' Metadata S3 class
 #' 
 #' @param tables result of \code{\link{sql.tables}} query
