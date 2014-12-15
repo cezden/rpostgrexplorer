@@ -68,8 +68,8 @@ producing:
 $instances.count
 Source: local data frame [1 x 2]
 
-  typename tablecount
-1     int8         38
+                attname typename tablecount
+1      cookieid             int8         38
 
 $similar
 Source: local data frame [3 x 2]
