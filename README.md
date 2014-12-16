@@ -80,6 +80,22 @@ Source: local data frame [3 x 2]
 3      coookieid                 1
 ```
 
+<h5> Tables and attributes search </h5>
+
+Selecting all instances of the attributes with some name:
+
+```{Ruby}
+attribute.instances(meta.inf, c("cookieid", "consumerid"))
+```
+
+Selecting all tables containing all attributes from given set:
+
+```{Ruby}
+tables.with.attributes(meta.inf, c("cookieid", "consumerid"))
+```
+
+
+
 <h4> Querying the database based on the metadata object </h4>
 
 <h5> Selecting data from all tables containing given attribute </h5>
