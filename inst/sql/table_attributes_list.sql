@@ -1,12 +1,16 @@
 select 
-  a.*, 
+  a.schemaname, a.tablename, a.attname, a.typname as typename, a.attlen, a.attlen2, a.notnull, 
   b.null_frac, b.n_distinct, b.most_common_vals, b.most_common_freqs, b.histogram_bounds 
 from 
   (select 
       t.schemaname, t.tablename,
       a.attname,
       tp.typname,
-      a.attlen
+      a.attlen,
+      a.atttypmod as attlen2,
+      CASE a.attnotnull 
+        WHEN false THEN 0  ELSE 1  
+      END as notnull
   from 
       pg_attribute a, 
       pg_class c, 
