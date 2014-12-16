@@ -210,6 +210,7 @@ attribute.instances.metadata.info <- function(metadata.info, attribute.names, fi
       metadata.info$attributes %>% filter(attname %in% attribute.names) %>% select(schemaname, tablename, attname, typename)
       )
   }
+  stop("Not implemented")
   ##stringi::stri_detect_fixed(c("stringi R"), c('in', 'R', '0'))
   ## TODO: write
 }
