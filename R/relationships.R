@@ -94,16 +94,6 @@ create.groupping.query <- function(groupping.col, tablename, schemaname = NA){
          " where ", groupping.col, " is not null group by ", groupping.col)
 }
 
-#' @export
-tsttst <- function(){
-  cat(get("tables_list", pkg_globals))
-}
-
-
-
-#sql.entity.relation2("q1", "q1c", "q1cnt", "q2", "q2c", "q2cnt")
-
-
 sql.table.schemed <- function(tab.name, schema.name){
 
   schemaselector <- unlist(lapply(schema.name, function(x){
@@ -118,7 +108,10 @@ sql.table.schemed <- function(tab.name, schema.name){
 }
 
 #' @export
-sql.entity.relation.simple <- function(tab1.name, tab2.name, tab1.groupping.col, tab2.groupping.col = tab1.groupping.col, schemaname1 = NA, schemaname2 = schemaname1){
+sql.entity.relation.simple <- 
+  function(tab1.name, tab2.name, 
+           tab1.groupping.col, tab2.groupping.col = tab1.groupping.col, 
+           schemaname1 = NA, schemaname2 = schemaname1){
   q1 <- sql.table.schemed(tab1.name, schemaname1)
   q2 <- sql.table.schemed(tab2.name, schemaname2)
   sql.entity.relation.generic(
