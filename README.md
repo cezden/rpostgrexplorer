@@ -80,5 +80,14 @@ Source: local data frame [3 x 2]
 3      coookieid                 1
 ```
 
+<h4> Querying the database based on the metadata object </h4>
+
+<h5> Selecting data from all tables containing given attribute </h5>
+
+```{Ruby}
+
+cookie.sketch <- experimental.db.sketch.attribute(control.connection, meta.inf, "cookieid", "31415")
+
+```
 
 
