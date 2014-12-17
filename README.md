@@ -106,4 +106,16 @@ cookie.sketch <- experimental.db.sketch.attribute(control.connection, meta.inf, 
 
 ```
 
+<h5> Mining the relationships beetween attribute instances </h5>
 
+In order to check the type of the relationship between instances of the attribute you may use
+
+```{Ruby}
+
+cookieid.atts <- attribute.instances(meta.inf, "cookieid")
+cookieid.atts.from <- cookieid.atts[1:3,]
+
+experimental.db.infer.relation.simple(control.connection, cookieid.atts.from, cookie.atts)
+
+```
+Based on its output you can infer the type of relationship (0+ -- 0+, 1 -- 0+, etc) and check their quality.
