@@ -123,7 +123,7 @@ db.attributes <- function(x, ...) UseMethod("db.attributes")
 #' @param full should full database information be returned?
 #' @export
 db.attributes.metadata.info <- function(metadata.inf, full = FALSE){
-  metadata.inf$attributes %>% select(schemaname, tablename, attname, typename)
+  metadata.inf$attributes %>% dplyr::select(schemaname, tablename, attname, typename)
 }
 
 #' S3 generic dispatcher
@@ -139,10 +139,10 @@ db.attributes.counts <- function(x, ...) UseMethod("db.attributes.counts")
 db.attributes.counts.metadata.info <- function(metadata.inf, typeinfo = FALSE){
   if (typeinfo){
     return(
-      metadata.inf$attributes %>% dplyr::group_by(attname, typename) %>% dplyr::summarize(cnt = n()) %>% ungroup() %>% arrange(desc(cnt))
+      metadata.inf$attributes %>% dplyr::group_by(attname, typename) %>% dplyr::summarize(cnt = n()) %>% dplyr::ungroup() %>% dplyr::arrange(desc(cnt))
       )
   }
-  metadata.inf$attributes %>% group_by(attname) %>% summarize(tablecount = n()) %>% arrange(desc(tablecount))
+  metadata.inf$attributes %>% dplyr::group_by(attname) %>% dplyr::summarize(tablecount = n()) %>% dplyr::arrange(desc(tablecount))
 }
 
 
@@ -157,7 +157,7 @@ db.tables <- function(x, ...) UseMethod("db.tables")
 #' @param metadata.inf object of class \code{\link{metadata.info}} to perform extraction from
 #' @export
 db.tables.metadata.info <- function(metadata.inf){
-  metadata.inf$tables %>% select(schemaname, tablename, count_estimate, has_index, has_primary_key)
+  metadata.inf$tables %>% dplyr::select(schemaname, tablename, count_estimate, has_index, has_primary_key)
 }
 
 
@@ -207,7 +207,7 @@ attribute.instances <- function(x, ...) UseMethod("attribute.instances")
 attribute.instances.metadata.info <- function(metadata.info, attribute.names, fixed = TRUE, partial = FALSE){
   if (fixed && !partial){
     return(
-      metadata.info$attributes %>% filter(attname %in% attribute.names) %>% select(schemaname, tablename, attname, typename)
+      metadata.info$attributes %>% dplyr::filter(attname %in% attribute.names) %>% dplyr::select(schemaname, tablename, attname, typename)
       )
   }
   stop("Not implemented")
@@ -231,9 +231,9 @@ tables.with.attributes.metadata.info <- function(metadata.info, attribute.names)
   attribute.names.unique <- unique(attribute.names)
   att.count <- length(attribute.names.unique)
   res <- metadata.info$attributes %>% 
-    filter(attname %in% attribute.names.unique) %>% 
-    group_by(schemaname, tablename) %>% 
-    summarize(attcount = n()) %>% filter(attcount == att.count) %>% select(schemaname, tablename)
+    dplyr::filter(attname %in% attribute.names.unique) %>% 
+    dplyr::group_by(schemaname, tablename) %>% 
+    dplyr::summarize(attcount = n()) %>% dplyr::filter(attcount == att.count) %>% dplyr::select(schemaname, tablename)
   res
 }
 
@@ -254,11 +254,11 @@ describe.attribute.metadata.info <- function(metadata.info, attribute.name){
   att.instances.count <- metadata.info$attributes %>% 
     dplyr::filter(attname == attribute.name) %>% 
     dplyr::group_by(attname, typename) %>% 
-    dplyr::summarize(tablecount = n()) %>% ungroup() %>% arrange(desc(tablecount))
+    dplyr::summarize(tablecount = n()) %>% dplyr::ungroup() %>% dplyr::arrange(desc(tablecount))
   
   ## similar attributes
   most.sim <- string.get.most.similar(attribute.name, metadata.info$atts.by.name$attname)
-  similar <- metadata.info$atts.by.name %>% filter(attname %in% most.sim)
+  similar <- metadata.info$atts.by.name %>% dplyr::filter(attname %in% most.sim)
   
   list(instances.count = att.instances.count, similar = similar)
 }
@@ -275,7 +275,11 @@ ambiguous.attributes <- function(x, ...) UseMethod("ambiguous.attributes")
 #' @export
 ambiguous.attributes.metadata.info <- function(metadata.info){
   att.type.instances <- metadata.info$attributes %>% dplyr::group_by(typename, attname) %>% dplyr::summarize(cnt = 1) 
-  att.type.ambiguous <- att.type.instances %>% group_by(attname) %>% summarize(types.used = sum(cnt)) %>% filter(types.used > 1)
+  att.type.ambiguous <- 
+    att.type.instances %>% 
+    dplyr::group_by(attname) %>% 
+    dplyr::summarize(types.used = sum(cnt)) %>% 
+    dplyr::filter(types.used > 1)
   att.type.instances.cnt <- metadata.info$attributes %>% 
     dplyr::filter(attname %in% att.type.ambiguous$attname) %>% 
     dplyr::group_by(attname, typename) %>% 

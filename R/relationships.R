@@ -130,7 +130,7 @@ experimental.db.infer.relation <- function(db.connection, colName, baseTable, re
 
 #' @export
 experimental.db.infer.relation.simple <- function(db.connection, base.att, related.att){
-  related.att.clean <- setdiff(related.att, base.att)
+  related.att.clean <- dplyr::setdiff(related.att, base.att)
   ### TODO: unique, just in case....
   from.rel <- base.att %>% dplyr::mutate(
     schemed.tab = sql.table.schemed(tab.name = tablename, schema.name = schemaname), 
