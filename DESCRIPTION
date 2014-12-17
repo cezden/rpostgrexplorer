@@ -16,7 +16,8 @@ Imports:
     DBI,
     stringi,
     dplyr,
-    utils
+    utils,
+    arules
 Suggests:
     testthat
 URL: https://github.com/cezden/rpostgrexplorer
