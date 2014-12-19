@@ -111,6 +111,14 @@ db.attributes.counts(meta.inf.restricted)
 
 ```
 
+<h5> Selecting all attributes ending with "id" </h5>
+
+```{Ruby}
+library(dplyr)
+library(stringi)
+atts.id <- db.attributes(meta.inf)  %>% dplyr::filter(stringi::stri_endswith_fixed(attname, "id"))
+meta.inf.id <- restrict(meta.inf, atts.id)
+```
 
 <h4> Querying the database based on the metadata object </h4>
 
