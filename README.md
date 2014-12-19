@@ -94,6 +94,22 @@ Selecting all tables containing all attributes from given set:
 tables.with.attributes(meta.inf, c("cookieid", "consumerid"))
 ```
 
+<h4> Filtering the metadata object </h4>
+
+The contents of the metadata object can be filtered by filtering tables or attributes according to 
+arbitrary criteria using the *restrict* function.
+Since the results of the query functions (*db.attributes*, *db.attributes.counts* and *db.tables*) are *data.frame*
+objects the restricting mechanism is quite flexible.
+
+<h5> Selecting attributes with more than 100 instances </h5>
+
+```{Ruby}
+library(dplyr)
+restriction <- db.attributes.counts(meta.inf)  %>% dplyr::filter(tablecount>250)
+meta.inf.restricted <- restrict(meta.inf, restriction) 
+db.attributes.counts(meta.inf.restricted)
+
+```
 
 
 <h4> Querying the database based on the metadata object </h4>
