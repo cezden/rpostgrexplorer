@@ -74,7 +74,7 @@ experimental.infer.domains <- function(meta.inf, minimal.support = 0.1, maximal.
 #' @export
 #' @importFrom dplyr %>%
 #' @importClassesFrom arules transactions itemsets
-experimental.infer.domains2 <- function(meta.inf, domain.set = list(), minimal.support = 0.1, maximal.length = 20){
+experimental.infer.domains2 <- function(meta.inf, domain.set = list(), minimal.support = 0.1, minimal.length = 2, maximal.length = 20){
   schemed.attribs <- db.attributes(meta.inf) %>% dplyr::mutate(schema.tab = paste0(schemaname, ".", tablename))
   schemed.attribs.trans.pure <- split(schemed.attribs[, "attname"], schemed.attribs[, "schema.tab"])
   schemed.attribs.trans.red <- lapply(
@@ -90,7 +90,7 @@ experimental.infer.domains2 <- function(meta.inf, domain.set = list(), minimal.s
   schemed.attribs.trans <- as(schemed.attribs.trans.red, "transactions")
   ## TODO: consider other options (the param named "parameter")
   freq.sets <- arules::eclat(schemed.attribs.trans, 
-                             parameter = list(supp = minimal.support, maxlen = maximal.length, minlen = 2))
+                             parameter = list(supp = minimal.support, maxlen = maximal.length, minlen = minimal.length))
   #for each level of support select elements that (on the group) get is.maximal==TRUE
   support.vals <- arules::quality(freq.sets)$support
   support.vals.unique <- sort(unique(support.vals))

@@ -8,7 +8,7 @@ op.all <- function(){
   
 }
 
-op.some <- function(min.number=1){
+op.some <- function(min.number = 1){
   
 }
 
@@ -20,5 +20,13 @@ restrict <- function(){
   
 }
 
+rule.matcher <- function(){
+  
+}
+
+## op.all("a", "b", op.some("c", "d"), op.none("e", "f"))
+
+
 
 }
+
