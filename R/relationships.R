@@ -150,10 +150,10 @@ experimental.db.infer.relation.simple <- function(db.connection, base.att, relat
       cross.description <- rbind(cross.description, data.frame(from.rel = from.rel.elem$relpoint, to.rel = to.rel.elem$relpoint, join.name = join.name))
       cross.description.queries[[join.name]] <-
         sql.entity.relation.generic(
-        query1 = paste0("select * from ", from.rel.elem$schemed.tab), 
+        query1 = paste0("select ", from.rel.elem$attname, " from ", from.rel.elem$schemed.tab), 
         query1.colname = from.rel.elem$attname, 
         query1.countname = "cnt", 
-        query2 = paste0("select * from ", to.rel.elem$schemed.tab), 
+        query2 = paste0("select ", to.rel.elem$attname, " from ", to.rel.elem$schemed.tab), 
         query2.colname = to.rel.elem$attname, 
         query2.countname = "cnt")
     }
