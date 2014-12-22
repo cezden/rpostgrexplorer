@@ -143,3 +143,12 @@ experimental.db.infer.relation.simple(control.connection, cookieid.atts.from, co
 
 ```
 Based on its output you can infer the type of relationship (0+ -- 0+, 1 -- 0+, etc) and check their quality.
+
+
+<h3> Fluid concepts </h3>
+
+All the functions with the name starting with "experimental" should be treated as a concepts rather than the complete implementation -- they will probably changed and refined in near future.
+
+<h5> Frequent attribute sets </h5>
+
+Identification of frequently co-occuring attributes (indicating some "domains" in the data, e.g. attributes involved in record audit) can be aided by the **experimental.infer.domains** and **experimental.infer.domains2** functions.
