@@ -14,6 +14,29 @@ db.tables.metadata.info <- function(metadata.inf){
   metadata.inf$tables %>% dplyr::select(schemaname, tablename, count_estimate, has_index, has_primary_key)
 }
 
+
+#' Attribute description generic dispatcher
+#' @export
+describe.table <- function(x, ...) UseMethod("describe.table")
+
+#' Table description
+#' 
+#' @param metadata.inf an object of \code{\link{metadata.info}} class
+#' @param table.name the table name to describe
+#' @export
+describe.table.metadata.info <- function(metadata.inf, table.name){
+  
+  ## count attributes with given name
+  tabatts <- metadata.inf$attributes %>% 
+    dplyr::filter(tablename == table.name) %>% 
+    dplyr::arrange(schemaname, tablename, colposition)
+  tabatts
+}
+
+
+
+
+
 #' @export
 tables.with.attributes <- function(x, ...) UseMethod("tables.with.attributes")
 
