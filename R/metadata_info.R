@@ -81,10 +81,17 @@ metadata.info <- function(tables, attributes, schema = NULL){
   if (length(res$tables$internalid)>length(unique(res$tables$internalid))){
     stop("collision during generating internal IDs for tables")
   }
+  res$tables$internalname <- sql.table.schemed(tab.name = res$tables$tablename, schema.name = res$tables$schemaname)
+
   res$attributes$internalid <- anonymize.str(salt = res$attributes$schemaname, value = res$attributes$tablename, salt2 = res$attributes$attname)
   if (length(res$attributes$internalid)>length(unique(res$attributes$internalid))){
     stop("collision during generating internal IDs for attributes")
   }
+  res$attributes$internalname <- paste0(
+    sql.table.schemed(tab.name = res$attributes$tablename, schema.name = res$attributes$schemaname), 
+    ".", 
+    res$attributes$attname
+    )
   class(res) <- append(class(res), "metadata.info")
   res
 }

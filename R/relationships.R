@@ -134,11 +134,11 @@ experimental.db.infer.relation.simple <- function(db.connection, base.att, relat
   ### TODO: unique, just in case....
   from.rel <- base.att %>% dplyr::mutate(
     schemed.tab = sql.table.schemed(tab.name = tablename, schema.name = schemaname), 
-    relpoint.id = internalid, relpoint.name = paste0(schemed.tab, ".", attname))
+    relpoint.id = internalid, relpoint.name = internalname)
   
   to.rel <- related.att.clean %>% dplyr::mutate(
     schemed.tab = sql.table.schemed(tab.name = tablename, schema.name = schemaname), 
-    relpoint.id = internalid, relpoint.name = paste0(schemed.tab, ".", attname))
+    relpoint.id = internalid, relpoint.name = internalname)
   ##cross_join
   cross.description <- NULL
   cross.description.queries <- list()

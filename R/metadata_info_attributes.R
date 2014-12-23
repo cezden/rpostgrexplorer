@@ -35,7 +35,7 @@ db.attributes <- function(x, ...) UseMethod("db.attributes")
 #' @param full should full database information be returned?
 #' @export
 db.attributes.metadata.info <- function(metadata.inf, full = FALSE){
-  metadata.inf$attributes %>% dplyr::select(schemaname, tablename, attname, typename)
+  metadata.inf$attributes %>% dplyr::select(schemaname, tablename, attname, typename, internalid, internalname)
 }
 
 #' S3 generic dispatcher
@@ -100,7 +100,9 @@ attribute.instances <- function(x, ...) UseMethod("attribute.instances")
 attribute.instances.metadata.info <- function(metadata.info, attribute.names, fixed = TRUE, partial = FALSE){
   if (fixed && !partial){
     return(
-      metadata.info$attributes %>% dplyr::filter(attname %in% attribute.names) %>% dplyr::select(schemaname, tablename, attname, typename, internalid)
+      metadata.info$attributes %>% 
+        dplyr::filter(attname %in% attribute.names) %>% 
+        dplyr::select(schemaname, tablename, attname, typename, internalid, internalname)
     )
   }
   stop("Not implemented")

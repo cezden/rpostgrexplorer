@@ -34,7 +34,6 @@ sql.attribute.characteristics <- function(query, query.colname, query.countname,
 db.attribute.groupping.stats <- function(db.connection, atts.to.check){
   atts.ext <- atts.to.check %>% dplyr::mutate(
     schemed.tab = sql.table.schemed(tab.name = tablename, schema.name = schemaname), 
-    relpoint = paste0(schemed.tab, "! ! !", attname),
     query = sql.attribute.characteristics(
       query = paste0("select ", attname, " from ", schemed.tab), 
       query.colname = attname,

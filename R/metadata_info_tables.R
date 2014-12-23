@@ -11,7 +11,7 @@ db.tables <- function(x, ...) UseMethod("db.tables")
 #' @param metadata.inf object of class \code{\link{metadata.info}} to perform extraction from
 #' @export
 db.tables.metadata.info <- function(metadata.inf){
-  metadata.inf$tables %>% dplyr::select(schemaname, tablename, count_estimate, has_index, has_primary_key)
+  metadata.inf$tables %>% dplyr::select(schemaname, tablename, count_estimate, has_index, has_primary_key, internalid, internalname)
 }
 
 
