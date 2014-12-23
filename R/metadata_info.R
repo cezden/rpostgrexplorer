@@ -76,6 +76,15 @@ metadata.info <- function(tables, attributes, schema = NULL){
   res$atts.by.name <- attributes %>% dplyr::group_by(attname) %>% dplyr::summarize(tablecount = n())
   res$atts.by.name.type <- attributes %>% dplyr::group_by(attname, typename) %>% dplyr::summarize(tablecount = n())
   attr(res, "data.createdOn") <- Sys.time()
+  #internal attributes
+  res$tables$internalid <- anonymize.str(salt = res$tables$schemaname, value = "-", salt2 = res$tables$tablename)
+  if (length(res$tables$internalid)>length(unique(res$tables$internalid))){
+    stop("collision during generating internal IDs for tables")
+  }
+  res$attributes$internalid <- anonymize.str(salt = res$attributes$schemaname, value = res$attributes$tablename, salt2 = res$attributes$attname)
+  if (length(res$attributes$internalid)>length(unique(res$attributes$internalid))){
+    stop("collision during generating internal IDs for attributes")
+  }
   class(res) <- append(class(res), "metadata.info")
   res
 }

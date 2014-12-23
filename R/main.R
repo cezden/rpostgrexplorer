@@ -47,7 +47,7 @@ load.metadata <- function(control.connection, schemaname = NULL){
 }
 
 anonymize.str <- function(salt, value, salt2 = salt){
-  vals <- paste0(salt, "%irplvk/fsfio390258052%", value, salt2)
+  vals <- paste0(salt, "%;---irplvk/fsfio390258052@%!fds---;%", value, "%;---#850mc3fzpr5375@{nvidf;ysk$fj---;%", salt2)
   unlist(lapply(vals, function(x) {
     digest::digest(x, algo="md5", serialize = FALSE, file = FALSE, length = Inf, skip = 0, ascii = FALSE, raw = FALSE)
   }))

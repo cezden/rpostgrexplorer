@@ -100,7 +100,7 @@ attribute.instances <- function(x, ...) UseMethod("attribute.instances")
 attribute.instances.metadata.info <- function(metadata.info, attribute.names, fixed = TRUE, partial = FALSE){
   if (fixed && !partial){
     return(
-      metadata.info$attributes %>% dplyr::filter(attname %in% attribute.names) %>% dplyr::select(schemaname, tablename, attname, typename)
+      metadata.info$attributes %>% dplyr::filter(attname %in% attribute.names) %>% dplyr::select(schemaname, tablename, attname, typename, internalid)
     )
   }
   stop("Not implemented")
