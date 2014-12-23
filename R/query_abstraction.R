@@ -39,4 +39,22 @@ query.load.execute <- function(queries, control.connection, verbose = TRUE) {
   data  
 }  
 
-
+query.flatten.results <- function(query.load.execute.results, idfield.proposed = "query.flatten.results.id"){
+  qnames <- names(query.load.execute.results)
+  if (length(qnames) == 0){
+    return(list(results = data.frame(), idfield = "NULL"))
+  }
+  #checking if there is a name collision
+  qcols <- names(query.load.execute.results[[qnames[1]]])
+  idfield <- idfield.proposed
+  while(idfield %in% qcols){
+    idfield <- paste0(idfield, "1")
+  }
+  results.df <- NULL
+  for (res.it in qnames){
+    result <- data.frame(query.load.execute.results[[res.it]], stringsAsFactors = FALSE)
+    result[,idfield] <- res.it
+    results.df <- rbind(results.df, result)
+  }
+  list(results = results.df, idfield = idfield)
+}
