@@ -25,8 +25,10 @@ describe.table <- function(x, ...) UseMethod("describe.table")
 #' @param table.name the table name to describe
 #' @export
 describe.table.metadata.info <- function(metadata.inf, table.name){
+  ## TODO: present table statistics (if present)
+  ## TODO: restrict attribute list
   
-  ## count attributes with given name
+  ## count attributes with given table name
   tabatts <- metadata.inf$attributes %>% 
     dplyr::filter(tablename == table.name) %>% 
     dplyr::arrange(schemaname, tablename, colposition)
