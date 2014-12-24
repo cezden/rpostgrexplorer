@@ -134,11 +134,11 @@ experimental.db.infer.relation.simple <- function(db.connection, base.att, relat
   ### TODO: unique, just in case....
   from.rel <- base.att %>% dplyr::mutate(
     schemed.tab = sql.table.schemed(tab.name = tablename, schema.name = schemaname), 
-    relpoint = paste0(schemed.tab, "! ! !", attname))
+    relpoint.id = internalid, relpoint.name = internalname)
   
   to.rel <- related.att.clean %>% dplyr::mutate(
     schemed.tab = sql.table.schemed(tab.name = tablename, schema.name = schemaname), 
-    relpoint = paste0(schemed.tab, "! ! !", attname))
+    relpoint.id = internalid, relpoint.name = internalname)
   ##cross_join
   cross.description <- NULL
   cross.description.queries <- list()
@@ -146,25 +146,34 @@ experimental.db.infer.relation.simple <- function(db.connection, base.att, relat
     from.rel.elem <- from.rel[from.rel.it,]
     for(to.rel.it in 1:nrow(to.rel)){
       to.rel.elem <- to.rel[to.rel.it,]
-      join.name <- paste0("***",from.rel.elem$relpoint, "+ + +", to.rel.elem$relpoint, "***")
-      cross.description <- rbind(cross.description, data.frame(from.rel = from.rel.elem$relpoint, to.rel = to.rel.elem$relpoint, join.name = join.name))
+      join.name <- paste0("***",from.rel.elem$relpoint.id, "+ + +", to.rel.elem$relpoint.id, "***")
+      cross.description <- rbind(
+        cross.description, 
+        data.frame(
+          from.rel.id = from.rel.elem$relpoint.id, 
+          from.rel.name = from.rel.elem$relpoint.name,
+          to.rel.id = to.rel.elem$relpoint.id, 
+          to.rel.name = to.rel.elem$relpoint.name, 
+          join.name = join.name
+          )
+        )
       cross.description.queries[[join.name]] <-
         sql.entity.relation.generic(
-        query1 = paste0("select * from ", from.rel.elem$schemed.tab), 
+        query1 = paste0("select ", from.rel.elem$attname, " from ", from.rel.elem$schemed.tab), 
         query1.colname = from.rel.elem$attname, 
         query1.countname = "cnt", 
-        query2 = paste0("select * from ", to.rel.elem$schemed.tab), 
+        query2 = paste0("select ", to.rel.elem$attname, " from ", to.rel.elem$schemed.tab), 
         query2.colname = to.rel.elem$attname, 
         query2.countname = "cnt")
     }
   }
   rel.results <- query.load.execute(cross.description.queries, db.connection)
   ## repacking as data.frame
-  rel.results.df <- NULL
-  for (jn in names(rel.results)) rel.results.df <- rbind(rel.results.df, data.frame(join.name = jn, rel.results[[jn]]))
+  rel.results.repack <- query.flatten.results(rel.results, "join.name")
+  rel.results.df <- rel.results.repack$results
+  res <- dplyr::inner_join(x = rel.results.df, y = cross.description, by = rel.results.repack$idfield) %>% 
+    dplyr::select(-one_of(rel.results.repack$idfield))
   
-  
-  res <- dplyr::inner_join(x = rel.results.df, y = cross.description, by = "join.name") %>% dplyr::select(-join.name)
   
   ## join & rename both from.rel and to.rel
   

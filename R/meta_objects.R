@@ -16,9 +16,6 @@ op.none <- function(){
   
 }
 
-restrict <- function(){
-  
-}
 
 rule.matcher <- function(){
   
@@ -31,4 +28,5 @@ rule.matcher <- function(){
 ## op.all <-> and
 
 }
+
 

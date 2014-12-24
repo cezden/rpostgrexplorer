@@ -45,24 +45,6 @@ create.attribute.index=function(attributesList){
 
 
 
-get.groupping.att.query=function(groupping.col, tablename, schemaname=NA){
-  schemaselector=""
-  if (!is.na(schemaname)){
-    schemaselector=paste(schemaname,".",sep="")
-  }
-  paste("
-        select 
-        sum(cnt) as row_cnt, 
-        count(*) as distinct_val_cnt, 
-        min(cnt) as mincnt, 
-        avg(cnt) as avgcnt, 
-        max(cnt) as maxcnt, 
-        stddev_samp(cnt) as sdevcnt 
-        from
-        (select ",groupping.col,",count(*) as cnt from ",schemaselector,tablename," group by ",groupping.col,")
-        ",sep="")
-}
-
 infer.relation=function(colName,baseTable,relTables,schemaname=NA){
   relTables.enf=setdiff(unlist(relTables),baseTable)
   
@@ -239,6 +221,15 @@ ccl=hclust(d=as.dist(vv))
 plot(ccl)
 mm=cutree(ccl,k=10)
 by(data=names(mm),INDICES=mm,FUN=function(x) as.character(x))
+
+
+
+
+
+
+
+
+
 
 
 }

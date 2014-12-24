@@ -1,5 +1,7 @@
 select 
-  a.schemaname, a.tablename, a.attname, a.typname as typename, a.attlen, a.attlen2, a.notnull, 
+  a.schemaname, a.tablename, a.attname, 
+  a.typname as typename, a.attlen, a.attlen2, 
+  a.attnum as colposition, a.notnull, a.atthasdef as hasdefault, a.attstattarget as statlevel,
   b.null_frac, b.n_distinct, b.most_common_vals, b.most_common_freqs, b.histogram_bounds 
 from 
   (select 
@@ -8,6 +10,9 @@ from
       tp.typname,
       a.attlen,
       a.atttypmod as attlen2,
+      a.attnum,
+      a.atthasdef,
+      a.attstattarget,
       CASE a.attnotnull 
         WHEN false THEN 0  ELSE 1  
       END as notnull

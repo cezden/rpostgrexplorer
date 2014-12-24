@@ -94,7 +94,31 @@ Selecting all tables containing all attributes from given set:
 tables.with.attributes(meta.inf, c("cookieid", "consumerid"))
 ```
 
+<h4> Filtering the metadata object </h4>
 
+The contents of the metadata object can be filtered by filtering tables or attributes according to 
+arbitrary criteria using the *restrict* function.
+Since the results of the query functions (*db.attributes*, *db.attributes.counts* and *db.tables*) are *data.frame*
+objects the restricting mechanism is quite flexible.
+
+<h5> Selecting attributes with more than 100 instances </h5>
+
+```{Ruby}
+library(dplyr)
+restriction <- db.attributes.counts(meta.inf)  %>% dplyr::filter(tablecount>250)
+meta.inf.restricted <- restrict(meta.inf, restriction) 
+db.attributes.counts(meta.inf.restricted)
+
+```
+
+<h5> Selecting all attributes ending with "id" </h5>
+
+```{Ruby}
+library(dplyr)
+library(stringi)
+atts.id <- db.attributes(meta.inf)  %>% dplyr::filter(stringi::stri_endswith_fixed(attname, "id"))
+meta.inf.id <- restrict(meta.inf, atts.id)
+```
 
 <h4> Querying the database based on the metadata object </h4>
 
@@ -119,3 +143,12 @@ experimental.db.infer.relation.simple(control.connection, cookieid.atts.from, co
 
 ```
 Based on its output you can infer the type of relationship (0+ -- 0+, 1 -- 0+, etc) and check their quality.
+
+
+<h3> Fluid concepts </h3>
+
+All the functions with the name starting with "experimental" should be treated as a concepts rather than the complete implementation -- they will probably changed and refined in near future.
+
+<h5> Frequent attribute sets </h5>
+
+Identification of frequently co-occuring attributes (indicating some "domains" in the data, e.g. attributes involved in record audit) can be aided by the **experimental.infer.domains** and **experimental.infer.domains2** functions.
