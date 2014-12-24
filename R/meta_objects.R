@@ -26,7 +26,9 @@ rule.matcher <- function(){
 
 ## op.all("a", "b", op.some("c", "d"), op.none("e", "f"))
 
+## op.some <-> or
 
+## op.all <-> and
 
 }
 
