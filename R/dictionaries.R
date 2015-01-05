@@ -16,8 +16,25 @@ experimental.db.dictionary.tab <- function(df.db.table, key.field, value.field){
 db.query.value <- function(x, ...) UseMethod("db.query.value")
 
 
+query.dictionary.tab.value.generic <- function(dictkey, query){
+  stringi::stri_replace_all_fixed(
+    get("dictionary_values", pkg_globals), 
+    c(
+      "%%DICTKEY%%", "%%QUERY%%"
+    ), 
+    c(
+      dictkey, query
+    ),
+    vectorize_all = FALSE)    
+}
+
+
 #' @export
-db.query.value.db.dictionary.tab <- function(db.dictionary.tab){
+db.query.value.db.dictionary.tab <- function(db.dictionary.obj){
+  
+  
+  db.dictionary.obj$keys.v <- 
   "select %%KEY%% as dictkey, count(*) as dictkeycount from %%VVV%%% group by %%KEY%%"
+  db.dictionary.obj
 }
 
