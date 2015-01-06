@@ -1,6 +1,6 @@
 .onLoad <- function(libname, pkgname) {
   assign("pkg_globals", new.env(), envir=parent.env(environment()))
-  sql.files <- c("tables_list", "table_attributes_list", "relationship_miner", "objects_list", "attribute_primarykeyability")
+  sql.files <- c("tables_list", "table_attributes_list", "relationship_miner", "objects_list", "attribute_primarykeyability", "dictionary_values")
   for (sqlfile in sql.files){
     sqlfile.name <- paste0(sqlfile,".sql")
     sqlfile.contents <- readLines(system.file("sql", sqlfile.name, package = pkgname))    #read sql file content
