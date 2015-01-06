@@ -87,11 +87,11 @@ load.metadata.anonymized <- function(control.connection, schemaname = NULL){
   schemaname = anonymize.str(salt, schemaname, salt2)
   
   res$tablesList <- res$tablesList %>% 
-    mutate(
+    dplyr::mutate(
       schemaname = anonymize.str(salt, schemaname, salt2))  
 
   res$attributesList <- res$attributesList %>% 
-    mutate(
+    dplyr::mutate(
       schemaname = anonymize.str(salt, schemaname, salt2))  
   
   
@@ -99,18 +99,18 @@ load.metadata.anonymized <- function(control.connection, schemaname = NULL){
   salt <- paste(runif(20), collapse="")  
   salt2 <- paste(runif(20), collapse="")  
   res$tablesList <- res$tablesList %>% 
-    mutate(
+    dplyr::mutate(
       tablename = anonymize.str(salt, tablename, salt2))
   
   res$attributesList <- res$attributesList %>% 
-    mutate(
+    dplyr::mutate(
       tablename = anonymize.str(salt, tablename, salt2))  
 
   ## attributes
   salt <- paste(runif(20), collapse="")  
   salt2 <- paste(runif(20), collapse="")  
   res$attributesList <- res$attributesList %>% 
-    mutate(
+    dplyr::mutate(
       attname = anonymize.str(salt, attname, salt2))  
   ## clearing frequent vals (most_common_vals, most_common_freqs) and histogram bounds (histogram_bounds)
   #stop("frequent vals (most_common_vals, most_common_freqs) and histogram bounds (histogram_bounds) not cleared")  
