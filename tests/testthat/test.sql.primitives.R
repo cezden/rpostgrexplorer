@@ -68,5 +68,10 @@ test_that("sql.fill.template", {
   
   test4.d <- sql.fill.template("dictionary_values", query.names=c("q1"), list("%%DICTKEY%%"="abd", "%%QUERY%%"=c("bca")))
   expect_equal(test4.d, test4.exp)
+
+  test5 <- sql.fill.template("dictionary_values", query.names=NULL, list("%%DICTKEY%%"="abd", "%%QUERY%%"=c("bca")))
+  test5.exp <- list("select \n  abd as dictkey, \n  count(*) as dictkeycount \nfrom \n  (bca) \ngroup by abd")
+  expect_equal(test5, test5.exp)
+  
   
 })

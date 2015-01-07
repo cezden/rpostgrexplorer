@@ -14,12 +14,10 @@
 sql.tables <- function(schemaname = NULL){
   schema.selector <- ""
   if (!is.null(schemaname)){
-    schema.selector <- paste0("and t.schemaname='", schemaname, "'")
+    schema.selector.int <- paste0("t.schemaname='", schemaname, "'", collapse=" or ")
+    schema.selector <- paste0("and (", schema.selector.int, ")")
   }
-  stringi::stri_replace_all_fixed(
-    get("tables_list", pkg_globals), 
-    c("%%SCHEMA_SELECTOR%%"), c(schema.selector),
-    vectorize_all = FALSE)  
+  sql.fill.template("tables_list", query.names = NULL, list("%%SCHEMA_SELECTOR%%" = schema.selector))[[1]]
 }
 
 
@@ -42,24 +40,20 @@ sql.tables <- function(schemaname = NULL){
 sql.attributes <- function(schemaname = NULL){
   schema.selector <- ""
   if (!is.null(schemaname)){
-    schema.selector <- paste0("where a.schemaname='", schemaname, "'")
+    schema.selector.int <- paste0("a.schemaname='", schemaname, "'", collapse=" or ")
+    schema.selector <- paste0("where (", schema.selector.int, ")")
   } 
-  stringi::stri_replace_all_fixed(
-    get("table_attributes_list", pkg_globals), 
-    c("%%WHERE_SCHEMA_SELECTOR%%"), c(schema.selector),
-    vectorize_all = FALSE)    
+  sql.fill.template("table_attributes_list", query.names = NULL, list("%%WHERE_SCHEMA_SELECTOR%%" = schema.selector))[[1]]
 }
 
 
 sql.objects <- function(schemaname = NULL){
   schema.selector <- ""
   if (!is.null(schemaname)){
-    schema.selector <- paste0("and n.nspname='", schemaname, "'")
+    schema.selector.int <- paste0("n.nspname='", schemaname, "'", collapse=" or ")
+    schema.selector <- paste0("and (", schema.selector.int, ")")
   } 
-  stringi::stri_replace_all_fixed(
-    get("objects_list", pkg_globals), 
-    c("%%SCHEMA_SELECTOR%%"), c(schema.selector),
-    vectorize_all = FALSE)    
+  sql.fill.template("objects_list", query.names = NULL, list("%%SCHEMA_SELECTOR%%" = schema.selector))[[1]]
 }
 
 
