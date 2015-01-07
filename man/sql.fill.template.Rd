@@ -16,8 +16,22 @@ sql.fill.template(template.name, query.names, param.list)
 Generic template filler
 }
 \examples{
-sql.fill.template("dictionary_values", query.names="q1", list("\%\%DICTKEY\%\%"="abd", "\%\%QUERY\%\%"="bca"))
- sql.fill.template("dictionary_values", query.names=c("q1","q2"), list("\%\%QUERY\%\%"=c("bca","bcb"), "\%\%DICTKEY\%\%"=c("abd")))
- sql.fill.template("dictionary_values", query.names=c("q1","q2"), list("\%\%QUERY\%\%"=c("bca", "bcb"), "\%\%DICTKEY\%\%"=c("abc","abd")))
+sql.fill.template(
+   "dictionary_values",
+   query.names="q1",
+   list("\%\%DICTKEY\%\%" = "abd", "\%\%QUERY\%\%" = "bca")
+   )
+
+ sql.fill.template(
+   "dictionary_values",
+   query.names = c("q1","q2"),
+   list("\%\%QUERY\%\%" = c("bca", "bcb"), "\%\%DICTKEY\%\%" = c("abd"))
+   )
+
+ sql.fill.template(
+   "dictionary_values",
+   query.names = c("q1", "q2"),
+   list("\%\%QUERY\%\%" = c("bca", "bcb"), "\%\%DICTKEY\%\%"=c("abc", "abd"))
+   )
 }
 

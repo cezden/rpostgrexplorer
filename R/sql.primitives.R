@@ -25,9 +25,23 @@ sql.table.schemed <- function(tab.name, schema.name){
 #' @param query.names the vector of names of the generated queries (in the genereated query list)
 #' @param param.list the (named) list with names of parameters to be replaced and the values to be substituted
 #' @examples
-#'  sql.fill.template("dictionary_values", query.names="q1", list("%%DICTKEY%%"="abd", "%%QUERY%%"="bca"))
-#'  sql.fill.template("dictionary_values", query.names=c("q1","q2"), list("%%QUERY%%"=c("bca","bcb"), "%%DICTKEY%%"=c("abd")))
-#'  sql.fill.template("dictionary_values", query.names=c("q1","q2"), list("%%QUERY%%"=c("bca", "bcb"), "%%DICTKEY%%"=c("abc","abd")))
+#'  sql.fill.template(
+#'    "dictionary_values", 
+#'    query.names="q1", 
+#'    list("%%DICTKEY%%" = "abd", "%%QUERY%%" = "bca")
+#'    )
+#'    
+#'  sql.fill.template(
+#'    "dictionary_values", 
+#'    query.names = c("q1","q2"), 
+#'    list("%%QUERY%%" = c("bca", "bcb"), "%%DICTKEY%%" = c("abd"))
+#'    )
+#'    
+#'  sql.fill.template(
+#'    "dictionary_values", 
+#'    query.names = c("q1", "q2"), 
+#'    list("%%QUERY%%" = c("bca", "bcb"), "%%DICTKEY%%"=c("abc", "abd"))
+#'    )
 sql.fill.template <- function(template.name, query.names, param.list){
   template.str <- get(template.name, pkg_globals)
   param.names <- names(param.list)
@@ -43,3 +57,7 @@ sql.fill.template <- function(template.name, query.names, param.list){
   zz
 }
 
+
+sql.select.table <- function(table.df){
+  paste0("select * from ", sql.table.schemed(tab.name = table.df$tablename, schema.name = table.df$schemaname))
+}
