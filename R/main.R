@@ -34,7 +34,7 @@ load.metadata <- function(control.connection, schemaname = NULL){
   res <- query.load.execute(queries, control.connection)
   schema.descr <- ""
   
-  if (!is.null(schemaname)) schema.descr <- paste0(" from schema ",schemaname)
+  if (!is.null(schemaname)) schema.descr <- paste0(" from schema(s): ",paste0(schemaname, collapse=", ") )
   
   cat(paste0("DB engine version: ", res$db.engine.version,"\n"))
   cat(paste0("Loaded ", nrow(res$tablesList), " table(s)", schema.descr, "\n"))
