@@ -29,4 +29,54 @@ rule.matcher <- function(){
 
 }
 
+#' Constructor for class db.attribute
+#' 
+#' @param schemaname the name of DB schema
+#' @param tablename the name of DB table
+#' @param attname the name of the attribute
+#' @param attlen primary length of the type
+#' @param attlen2 secondary length of the type
+#' @param colposition position of the column in table
+#' @param notnull has the attribute NOT NULL constraint?
+#' @param hasdefault has the attribute default value?
+#' @param statlevel level of the statistics collected by DB
+#' @param null_frac DB-estimated proportion of NULL values
+#' @param n_distinct DB-estimated number of distinct values
+#' @param most_common_vals JSON-encoded table of most common attribute values (as estimated by DB)
+#' @param most_common_freqs JSON-encoded table of the frequencies of most common attribute values (as estimated by DB)
+#' @param histogram_bounds JSON-encoded table of the histogram bounds of attribute values
+#' @param internalid (reserved)
+#' @param internalname (reserved)
+#' @export
+db.attribute <- function(schemaname, tablename, attname, 
+                         typename, attlen = -1, attlen2 = -1, 
+                         colposition,
+                         notnull = FALSE, hasdefault = FALSE, 
+                         null_frac = NA, 
+                         n_distinct = NA, most_common_vals = NA, most_common_freqs = NA, histogram_bounds = NA,
+                         internalid, internalname
+                         ){
+  db.att.obj <- 
+  list("schemaname" = schemaname, 
+       "tablename" = tablename, 
+       "attname" = attname, 
+       "typename" = typename, 
+       "attlen" = attlen, 
+       "attlen2" = attlen2, 
+       "colposition" = colposition, 
+       "notnull" = notnull, 
+       "hasdefault" = hasdefault, 
+       "statlevel" = statlevel, 
+       "null_frac" = null_frac, 
+       "n_distinct" = n_distinct, 
+       "most_common_vals" = most_common_vals, 
+       "most_common_freqs" = most_common_freqs, 
+       "histogram_bounds" = histogram_bounds, 
+       "internalid" = internalid, 
+       "internalname" = internalname)  
+  
+  class(db.att.obj) <- "db.attribute"
+}
+
+
 
