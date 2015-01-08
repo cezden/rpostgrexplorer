@@ -39,10 +39,23 @@ query.load.execute <- function(queries, control.connection, verbose = TRUE) {
   data  
 }  
 
+#' Flattens results of the query.load.execute to a single data frame
+#' 
+#' Flattens results of the query.load.execute to a single data frame, if results do match the same structure (column names)
+#' 
+#' 
+#' @param query.load.execute.results the results to be processed
+#' @param idfield.proposed the proposed name of the column storing the row name (extracted from \code{query.load.execute.results}) 
+#' @return \code{list} with following fields:
+#'  \itemize{
+#'    \item{\code{results}} the resulting data.frame
+#'    \item{\code{idfield}} the name of the column in \code{results} preserving the list name of the query (may differ from \code{idfield.proposed} in case of name collision)
+#'  }
+#'  @export
 query.flatten.results <- function(query.load.execute.results, idfield.proposed = "query.flatten.results.id"){
   qnames <- names(query.load.execute.results)
   if (length(qnames) == 0){
-    return(list(results = data.frame(), idfield = "NULL"))
+    return(list(results = data.frame(), idfield = NULL))
   }
   #checking if there is a name collision
   qcols <- names(query.load.execute.results[[qnames[1]]])
