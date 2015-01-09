@@ -4,9 +4,7 @@
 \title{Constructor for class db.attribute}
 \usage{
 db.attribute(schemaname, tablename, attname, typename, attlen = -1,
-  attlen2 = -1, colposition, notnull = FALSE, hasdefault = FALSE,
-  null_frac = NA, n_distinct = NA, most_common_vals = NA,
-  most_common_freqs = NA, histogram_bounds = NA, internalid, internalname)
+  attlen2 = -1, colposition, internalid, internalname)
 }
 \arguments{
 \item{schemaname}{the name of DB schema}
@@ -21,27 +19,11 @@ db.attribute(schemaname, tablename, attname, typename, attlen = -1,
 
 \item{colposition}{position of the column in table}
 
-\item{notnull}{has the attribute NOT NULL constraint?}
-
-\item{hasdefault}{has the attribute default value?}
-
-\item{null_frac}{DB-estimated proportion of NULL values}
-
-\item{n_distinct}{DB-estimated number of distinct values}
-
-\item{most_common_vals}{JSON-encoded table of most common attribute values (as estimated by DB)}
-
-\item{most_common_freqs}{JSON-encoded table of the frequencies of most common attribute values (as estimated by DB)}
-
-\item{histogram_bounds}{JSON-encoded table of the histogram bounds of attribute values}
-
 \item{internalid}{(reserved)}
 
 \item{internalname}{(reserved)}
-
-\item{statlevel}{level of the statistics collected by DB}
 }
 \description{
-Constructor for class db.attribute
+Description of PostgreSQL attribute
 }
 
