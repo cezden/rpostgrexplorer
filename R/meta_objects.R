@@ -140,8 +140,24 @@ db.attribute.pg.stats <- function(schemaname, tablename, attname,
   db.att.obj
 }
 
+#' @export
+db.table <- function(schemaname, tablename, 
+                     attributenumber, 
+                     internalid, internalname){
+  db.att.obj <- 
+    list("schemaname" = schemaname, 
+         "tablename" = tablename, 
+         "attributenumber" = attributenumber, 
+         "internalid" = internalid, 
+         "internalname" = internalname)
+  class(db.att.obj) <- "db.table"
+  db.att.obj
+}
 
-db.table <- function(schemaname, tablename, attributenumber, internalid, internalname){
+#' @export
+db.table.pg.info <- function(schemaname, tablename, 
+                     count_estimate, has_index, has_primary_key, 
+                     internalid, internalname){
   db.att.obj <- 
     list("schemaname" = schemaname, 
          "tablename" = tablename, 
@@ -151,6 +167,6 @@ db.table <- function(schemaname, tablename, attributenumber, internalid, interna
          "has_primary_key" = has_primary_key, 
          "internalid" = internalid, 
          "internalname" = internalname)
-  class(db.att.obj) <- "db.table"
+  class(db.att.obj) <- "db.table.pg.info"
   db.att.obj
 }
