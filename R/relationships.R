@@ -51,17 +51,30 @@ sql.entity.relation.generic <- function(query1, query1.colname, query1.countname
   
   ## %%Q1_VALCOUNTER%%, %%Q1_VALNAME%%, %%Q1_QUERY%%
   ## %%Q2_VALCOUNTER%%, %%Q2_VALNAME%%, %%Q2_QUERY%%
-  stringi::stri_replace_all_fixed(
-    get("relationship_miner", pkg_globals), 
-    c(
-      "%%Q1_QUERY%%", "%%Q1_VALNAME%%","%%Q1_VALCOUNTER%%", 
-      "%%Q2_QUERY%%", "%%Q2_VALNAME%%","%%Q2_VALCOUNTER%%"
-    ), 
-    c(
-      query1, query1.colname, query1.countname,
-      query2, query2.colname, query2.countname
-    ),
-    vectorize_all = FALSE)  
+#  stringi::stri_replace_all_fixed(
+#    get("relationship_miner", pkg_globals), 
+#    c(
+#      "%%Q1_QUERY%%", "%%Q1_VALNAME%%","%%Q1_VALCOUNTER%%", 
+#      "%%Q2_QUERY%%", "%%Q2_VALNAME%%","%%Q2_VALCOUNTER%%"
+#    ), 
+#    c(
+#      query1, query1.colname, query1.countname,
+#      query2, query2.colname, query2.countname
+#    ),
+#    vectorize_all = FALSE)  
+  
+  sql.fill.template(
+    "relationship_miner", 
+    query.names = NULL, 
+    param.list = list(
+      "%%Q1_QUERY%%" = query1,
+      "%%Q1_VALNAME%%" = query1.colname,
+      "%%Q1_VALCOUNTER%%" = query1.countname,
+      "%%Q2_QUERY%%" = query2,
+      "%%Q2_VALNAME%%" = query2.colname,
+      "%%Q2_VALCOUNTER%%" = query2.countname
+      )
+  )
   
 }
 
@@ -164,7 +177,7 @@ experimental.db.infer.relation.simple <- function(db.connection, base.att, relat
         query1.countname = "cnt", 
         query2 = paste0("select ", to.rel.elem$attname, " from ", to.rel.elem$schemed.tab), 
         query2.colname = to.rel.elem$attname, 
-        query2.countname = "cnt")
+        query2.countname = "cnt")[[1]]
     }
   }
   rel.results <- query.load.execute(cross.description.queries, db.connection)
