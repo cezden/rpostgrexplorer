@@ -15,7 +15,8 @@ experimental.db.sketch.attribute(db.connection, metadata.inf, attribute.name,
 
 \item{attribute.value}{(\code{character}) a value of the attribute}
 
-\item{results.limit}{(\code{integer}) a maximal number of returned rows}
+\item{results.limit}{(\code{integer}) a maximal number of returned rows;
+if \code{NULL} all results will be fetched}
 }
 \description{
 Function performs a multiple selects from tables (in \code{metadata.inf}) containing the attribute \code{attribute.name}:

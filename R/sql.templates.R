@@ -1,9 +1,8 @@
 #' Generic SQL template filler 
-#' @param template.repo repository of templates
+#' @param template.repo repository of SQL templates
 #' @param template.name the name of the template
 #' @param query.names the vector of names of the generated queries (in the genereated query list)
 #' @param param.list the (named) list with names of parameters to be replaced and the values to be substituted
-#' @export
 #' @examples
 #'  sql.template.fill(
 #'    some.repo,
@@ -25,6 +24,7 @@
 #'    query.names = c("q1", "q2"), 
 #'    list("%%QUERY%%" = c("bca", "bcb"), "%%DICTKEY%%"=c("abc", "abd"))
 #'    )
+#' @export
 sql.template.fill <- function(template.repo, template.name, query.names, param.list){
   template.str <- template.repo[[template.name]]
   param.names <- names(param.list)
