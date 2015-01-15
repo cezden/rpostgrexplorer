@@ -32,12 +32,28 @@ query.load.execute <- function(queries, control.connection, verbose = TRUE) {
       data
     },
     finally = {
-      dbDisconnect(con)
+      ## in case of user break...
+      safely.close.connection(con)
       dbUnloadDriver(drv)  
     }
   ) 
   data  
 }  
+
+safely.close.connection <- function(con){
+  # checking for pending results...
+  res.sets <- dbListResults(con)
+  freeing.status <- unlist(lapply(res.sets, dbClearResult))
+  if (!all(freeing.status)){
+    warning("Connection cannot be closed, some ResultSets can't be cleared")
+    return (FALSE)
+  }
+  else{
+    return (dbDisconnect(con)[1])
+  }
+  #dbClearResult(dbListResults(conn)[[1]])
+}
+
 
 #' Flattens results of the query.load.execute to a single data frame
 #' 
