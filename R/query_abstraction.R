@@ -22,7 +22,7 @@ query.load.execute <- function(queries, control.connection, verbose = TRUE) {
   con <- do.call("dbConnect", c(drv, control.connection))
   data <- tryCatch(
     {
-      data <- lapply(queries.nonempty,function(query){
+      data <- lapply(queries.nonempty, function(query){
         if (verbose) cat(query,"\n")
         queryRes <- dbGetQuery(con, query)
         attr(queryRes, "data.sqlQuery") <- query
@@ -33,7 +33,12 @@ query.load.execute <- function(queries, control.connection, verbose = TRUE) {
     },
     finally = {
       dbDisconnect(con)
-      dbUnloadDriver(drv)  
+      connList <- DBI::dbListConnections(drv)
+      if (length(connList)==0){
+        dbUnloadDriver(drv)  
+      } else {
+        warning("Can't unload driver - some unknown connections are open")
+      }
     }
   ) 
   data  
