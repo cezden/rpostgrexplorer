@@ -6,7 +6,7 @@
 sql.template.fill(template.repo, template.name, query.names, param.list)
 }
 \arguments{
-\item{template.repo}{repository of templates}
+\item{template.repo}{repository of SQL templates}
 
 \item{template.name}{the name of the template}
 

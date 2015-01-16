@@ -9,16 +9,23 @@
 #' @param metadata.inf object of S3 class \code{\link{metadata.info}}
 #' @param attribute.name (\code{character}) the name of the attribute
 #' @param attribute.value (\code{character}) a value of the attribute
-#' @param results.limit (\code{integer}) a maximal number of returned rows
+#' @param results.limit (\code{integer}) a maximal number of returned rows; 
+#'  if \code{NULL} all results will be fetched
 #' @export
-experimental.db.sketch.attribute <- function(db.connection, metadata.inf, attribute.name, attribute.value, results.limit = 10){
+experimental.db.sketch.attribute <- function(
+  db.connection, metadata.inf, attribute.name, attribute.value, results.limit = 10
+  ){
   query.inst <- attribute.instances(metadata.inf, attribute.name)
   
   count.query.gen <- function(fromspec, attribute.name, att.value){
+    #fakecon <- list()
+    #class(fakecon) <- "DBIConnection"
+    #dplyr::sql_select(fakecon, select = "count(*)", from = "bbbb", where = )
     paste0("select count(*) from ", fromspec, " where ", attribute.name, "=", att.value)
   }
   val.query.gen <- function(fromspec, attribute.name, att.value, limit){
-    paste0("select * from ", fromspec, " where ", attribute.name, "=", att.value, " limit ",limit)
+    limit.str <- if (is.null(limit)) "" else paste(" limit", limit)
+    paste0("select * from ", fromspec, " where ", attribute.name, "=", att.value, limit.str)
   }
   
   qs <- query.inst %>% dplyr::mutate(schemed.tab = sql.table.schemed(tab.name = tablename, schema.name = schemaname) ) %>% 
